@@ -78,6 +78,26 @@ public class SCNLineNode: SCNNode {
     // TODO: optimise this function to not recalculate all points
     self.points.append(contentsOf: points)
   }
+    
+  /// Remove a point from the collection at the given index. The index
+  /// is checked against the collection before removal.
+  ///
+  /// - Parameter index: index of point to be removed from line. If out of range, there is no effect.
+  public func remove(index: Int) {
+    guard self.points.indices.contains(index) else { return }
+    self.points.remove(at: index)
+  }
+    
+  /// Filter the lines points by receiver result. Result of filter is set back on points.
+  ///
+  /// - Parameter receiver: A closure receiving the index and vector value of data value in points array.
+  ///                       It is used directly to filter the current set of line points.
+  public func filterRemove(_ receiver: (Int, SCNVector3) -> Bool) {
+      let filteredSet = self.points.enumerated().compactMap {
+        return receiver($0, $1) ? $1 : nil
+      }
+      self.points = filteredSet
+  }
 
   public required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
